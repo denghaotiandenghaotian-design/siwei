@@ -48,7 +48,7 @@
     font-family:Consolas,Menlo,monospace;
   }
   .seat-pass-label{font-size:10px;color:#8A90AC;margin-top:2px;}
-  .seat-qr svg{width:88px;height:88px;display:block;}
+  .seat-qr img{width:88px;height:88px;display:block;margin:0 auto;}
   .seat-url{
     font-size:9px;color:#6A7090;word-break:break-all;line-height:1.35;max-width:230px;
     background:#F7F8FC;border-radius:8px;padding:4px 6px;width:100%;
@@ -72,7 +72,7 @@
     }
     .seat-no{font-size:16px;padding:2px 10px;}
     .seat-pass{font-size:20px;letter-spacing:4px;}
-    .seat-qr svg{width:70px;height:70px;}
+    .seat-qr img{width:70px;height:70px;}
     .seat-url{font-size:8px;}
     .seat-foot{font-size:8px;}
   }
@@ -131,7 +131,7 @@
           var q = qrcode(0, 'M');
           q.addData(url);
           q.make();
-          qr.innerHTML = q.createSvgTag(3, 1);
+          qr.innerHTML = q.createImgTag(6, 2);
         } catch (e) { qr.textContent = url; }
         card.appendChild(qr);
 
