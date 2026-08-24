@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>思维星球 · 学习看板</title>
+<link rel="stylesheet" href="assets/styles.css">
+</head>
+<body>
+
+<header class="app-header">
+  <div class="container">
+    <div class="logo">
+      <svg class="planet" viewBox="0 0 40 40"><circle cx="20" cy="20" r="11" fill="#4C6FFF"/><ellipse cx="20" cy="20" rx="19" ry="7" fill="none" stroke="#FF8A4C" stroke-width="3" transform="rotate(-20 20 20)"/></svg>
+      思维星球
+    </div>
+    <button class="btn-sound" id="soundBtn" title="开关音效" onclick="tpToggleSound()">🔊</button>
+    <div class="avatar">朵</div>
+  </div>
+</header>
+
+<main class="container">
+
+  <section class="section">
+    <div class="t-h1">我的星球看板 🪐</div>
+    <p class="t-sm" style="margin-top:4px;">朵朵 · 进阶段 L2 · 已探险 <span id="exploreDays" style="color:var(--ok);font-weight:800;">0</span> 天</p>
+  </section>
+
+  <!-- 数据瓷砖 -->
+  <section class="section grid-2">
+    <div class="stat"><div class="v" id="dStars" style="color:var(--accent)">0</div><div class="l">收集星星 ⭐</div></div>
+    <div class="stat"><div class="v" id="dStreak" style="color:var(--ok)">0</div><div class="l">连续打卡天 🔥</div></div>
+    <div class="stat"><div class="v" id="dLearned">0</div><div class="l">已点亮知识星</div></div>
+    <div class="stat"><div class="v" id="dSolved" style="color:var(--m-space)">0</div><div class="l">闯关答对题</div></div>
+  </section>
+
+  <!-- 四模块掌握度 -->
+  <section class="section">
+    <div class="t-h3" style="margin-bottom:4px;">四大思维星球掌握度</div>
+    <p class="t-sm" style="margin-bottom:12px;">题库共 600 题（每模块 150，L1/L2/L3 各 50），下图为本模块已练题目掌握度。</p>
+    <div class="card">
+      <div class="row wrap" style="justify-content:space-around;gap:14px;">
+        <div class="center"><div class="ring ring-lg" id="dRingLogic" style="--p:0;--c:var(--m-logic)"><span>0</span></div><div class="t-sm" style="margin-top:8px;color:var(--m-logic)">逻辑推理</div></div>
+        <div class="center"><div class="ring ring-lg" id="dRingShape" style="--p:0;--c:var(--m-shape)"><span>0</span></div><div class="t-sm" style="margin-top:8px;color:var(--m-shape)">图形认知</div></div>
+        <div class="center"><div class="ring ring-lg" id="dRingNumber" style="--p:0;--c:var(--m-number)"><span>0</span></div><div class="t-sm" style="margin-top:8px;color:var(--m-number)">数感运算</div></div>
+        <div class="center"><div class="ring ring-lg" id="dRingSpace" style="--p:0;--c:var(--m-space)"><span>0</span></div><div class="t-sm" style="margin-top:8px;color:var(--m-space)">空间想象</div></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 本周趋势 -->
+  <section class="section">
+    <div class="t-h3" style="margin-bottom:12px;">本周每日学习（分钟）</div>
+    <div class="card">
+      <div class="bar">
+        <div style="height:40%"><span>20</span></div>
+        <div style="height:65%"><span>35</span></div>
+        <div style="height:50%"><span>25</span></div>
+        <div style="height:80%"><span>45</span></div>
+        <div style="height:60%"><span>30</span></div>
+        <div style="height:95%"><span>55</span></div>
+        <div style="height:70%"><span>40</span></div>
+      </div>
+      <div class="row between t-nano" style="margin-top:10px;color:var(--text-mute)"><span>一</span><span>二</span><span>三</span><span>四</span><span>五</span><span>六</span><span>日</span></div>
+    </div>
+  </section>
+
+  <!-- 能力雷达（SVG） -->
+  <section class="section">
+    <div class="t-h3" style="margin-bottom:12px;">思维能力画像</div>
+    <div class="card center">
+      <svg viewBox="0 0 200 200" width="240" height="240">
+        <polygon points="100,30 165,75 145,150 55,150 35,75" fill="none" stroke="#E6E9F5" stroke-width="2"/>
+        <polygon points="100,55 150,85 135,135 65,135 50,85" fill="none" stroke="#E6E9F5" stroke-width="1.5"/>
+        <polygon points="100,30 165,75 145,150 55,150 35,75" fill="rgba(76,111,255,.12)" stroke="#4C6FFF" stroke-width="2.5"/>
+        <polygon points="100,60 150,82 132,128 62,128 48,82" fill="rgba(155,109,255,.35)" stroke="#9B6DFF" stroke-width="2.5"/>
+        <text x="100" y="22" text-anchor="middle" font-size="11" fill="#6B7299" font-weight="700">逻辑</text>
+        <text x="178" y="78" text-anchor="middle" font-size="11" fill="#6B7299" font-weight="700">图形</text>
+        <text x="152" y="168" text-anchor="middle" font-size="11" fill="#6B7299" font-weight="700">数感</text>
+        <text x="48" y="168" text-anchor="middle" font-size="11" fill="#6B7299" font-weight="700">空间</text>
+        <text x="22" y="78" text-anchor="middle" font-size="11" fill="#6B7299" font-weight="700">专注</text>
+      </svg>
+      <p class="t-sm" style="margin-top:6px;">逻辑与专注较强，空间想象是下一步重点 💡</p>
+    </div>
+  </section>
+
+  <!-- 成就 -->
+  <section class="section" style="padding-bottom:8px;">
+    <div class="t-h3" style="margin-bottom:4px;">我的成就墙 🏅</div>
+    <p class="t-sm" style="margin-bottom:12px;" id="badgeSummary">点亮知识星、连续打卡、闯关答对，都能解锁新成就！</p>
+    <div class="grid-3" id="badgeWall" style="gap:12px;"></div>
+  </section>
+
+</main>
+
+<nav class="tabbar">
+  <a class="tab" href="planet.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 11l9-8 9 8M5 10v10h14V10"/></svg>星球</a>
+  <a class="tab" href="curriculum.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 5h16v14H4zM4 9h16M9 5v14"/></svg>课程</a>
+  <a class="tab" href="exercise.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="8" width="18" height="10" rx="5"/><path d="M8 12h.01M12 12h.01M16 12h.01M7 8V6h10v2"/></svg>闯关</a>
+  <a class="tab active" href="dashboard.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 20V10M10 20V4M16 20v-7M22 20H2"/></svg>看板</a>
+  <a class="tab" href="parent.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 21s-7-4.5-9-9a4.5 4.5 0 0 1 9-2 4.5 4.5 0 0 1 9 2c-2 4.5-9 9-9 9Z"/></svg>家长</a>
+</nav>
+
+<script src="assets/framework.js"></script>
+<script src="assets/play.js"></script>
+<script>
+(function(){
+  const P=TP.get(), total=TP.totalTopics();
+  document.getElementById('exploreDays').textContent=P.streak.count;
+  document.getElementById('dStars').textContent=P.stars;
+  document.getElementById('dStreak').textContent=P.streak.count;
+  document.getElementById('dLearned').innerHTML=TP.countLearned()+'<span style="font-size:14px;color:var(--text-mute)"> / '+total+'</span>';
+  document.getElementById('dSolved').textContent=P.solved;
+
+  // 各模块已学会占比
+  const mods={logic:0,shape:0,number:0,space:0}, tot={logic:0,shape:0,number:0,space:0};
+  Object.values(P.learned).forEach(x=>{ if(x&&x.m&&mods[x.m]!==undefined) mods[x.m]++; });
+  if(typeof MODULE_SPINE!=='undefined'&&MODULE_SPINE){
+    Object.keys(tot).forEach(k=>{ MODULE_SPINE[k].boards.forEach(b=>{['L1','L2','L3'].forEach(l=>{tot[k]+=(b.tiers[l]||[]).length;});}); });
+  }
+  [['dRingLogic','logic'],['dRingShape','shape'],['dRingNumber','number'],['dRingSpace','space']].forEach(([id,mod])=>{
+    const el=document.getElementById(id); if(!el) return;
+    const p=tot[mod]?Math.round(mods[mod]/tot[mod]*100):0;
+    el.style.setProperty('--p',p); el.querySelector('span').textContent=p;
+  });
+
+  // 成就墙
+  const wall=document.getElementById('badgeWall');
+  const list=TP.badgeList();
+  let unlocked=0;
+  list.forEach(b=>{
+    const pr=TP.badgeProgress(b.def);
+    const on=b.unlocked; if(on) unlocked++;
+    const card=document.createElement('div');
+    card.className='badge-card '+(on?'on':'locked');
+    card.innerHTML=
+      '<span class="be">'+(on?b.def.emoji:'🔒')+'</span>'+
+      '<div class="bn">'+b.def.name+'</div>'+
+      '<div class="bd">'+b.def.desc+'</div>'+
+      '<div class="bprog"><i style="width:'+pr.pct+'%"></i></div>'+
+      '<div class="bstate">'+(on?'已解锁 ✦':('进度 '+pr.cur+'/'+pr.need))+'</div>';
+    wall.appendChild(card);
+  });
+  document.getElementById('badgeSummary').textContent=
+    '已解锁 '+unlocked+' / '+list.length+' 枚成就 · 继续探险解锁更多吧！';
+
+  TP.twinkle(); TP.initMascot();
+  function tpToggleSound(){ TP.toggleSound(); const btn=document.getElementById('soundBtn'); if(!btn) return; const on=TP.get().sound; btn.textContent=on?'🔊':'🔇'; btn.classList.toggle('off',!on); }
+  window.tpToggleSound = tpToggleSound;
+  tpToggleSound();
+})();
+</script>
+
+</body>
+</html>
