@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>思维星球 · 座位分发表（打印版）</title>
+<link rel="stylesheet" href="assets/styles.css">
+<style>
+  /* ============ 分发表专用（屏幕 + 打印） ============ */
+  body{background:#F4F6FB;color:#232745;}
+  .print-bar{
+    max-width:900px;margin:0 auto 14px;padding:14px 18px;display:flex;
+    align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;
+    background:#fff;border:1px solid rgba(76,111,255,.15);border-radius:14px;
+    box-shadow:0 4px 14px rgba(35,39,69,.06);
+  }
+  .print-bar h1{font-size:18px;margin:0;}
+  .print-bar .sub{font-size:12px;color:#6A7090;margin-top:4px;}
+  .print-btn{
+    background:linear-gradient(135deg,#4C6FFF,#2F5BFF);color:#fff;border:none;
+    padding:10px 22px;border-radius:999px;font-size:14px;font-weight:700;cursor:pointer;
+    box-shadow:0 4px 12px rgba(76,111,255,.3);
+  }
+  .print-btn:hover{opacity:.92;}
+  .sheet-note{
+    max-width:900px;margin:0 auto 16px;padding:12px 18px;font-size:12.5px;line-height:1.8;
+    color:#5A6080;background:#FFF7ED;border:1px solid rgba(255,138,76,.35);border-radius:12px;
+  }
+  .sheet-note b{color:#E07B39;}
+  .seat-grid{
+    max-width:900px;margin:0 auto;display:grid;
+    grid-template-columns:repeat(3,1fr);gap:12px;
+  }
+  .seat-card{
+    background:#fff;border-radius:14px;padding:12px 10px 10px;text-align:center;
+    border:1px solid rgba(76,111,255,.18);
+    box-shadow:0 3px 10px rgba(35,39,69,.05);
+    display:flex;flex-direction:column;align-items:center;gap:6px;
+  }
+  .seat-card-top{display:flex;align-items:center;justify-content:center;gap:8px;width:100%;}
+  .seat-no{
+    font-size:20px;font-weight:800;color:#4C6FFF;background:#EEF2FF;
+    padding:3px 14px;border-radius:999px;letter-spacing:1px;
+  }
+  .seat-tag{font-size:10px;color:#8A90AC;font-weight:600;}
+  .seat-pass{
+    font-size:26px;font-weight:800;letter-spacing:6px;color:#232745;
+    font-family:Consolas,Menlo,monospace;
+  }
+  .seat-pass-label{font-size:10px;color:#8A90AC;margin-top:2px;}
+  .seat-qr svg{width:88px;height:88px;display:block;}
+  .seat-url{
+    font-size:9px;color:#6A7090;word-break:break-all;line-height:1.35;max-width:230px;
+    background:#F7F8FC;border-radius:8px;padding:4px 6px;width:100%;
+  }
+  .seat-foot{font-size:9px;color:#AEB2C8;margin-top:2px;}
+  .print-only-tip{display:none;}
+
+  @media print {
+    body{background:#fff;}
+    .no-print{display:none !important;}
+    .print-bar,.sheet-note{margin:0 0 10px;}
+    .print-bar{box-shadow:none;border:none;padding:0;}
+    .print-bar h1{font-size:16px;}
+    .print-bar .sub{font-size:11px;}
+    .sheet-note{font-size:11px;padding:8px 12px;}
+    .seat-grid{gap:8px;max-width:100%;}
+    .seat-card{
+      page-break-inside:avoid;break-inside:avoid;
+      border-radius:10px;padding:8px 6px 6px;box-shadow:none;
+      border:1px solid #D8DCF0;
+    }
+    .seat-no{font-size:16px;padding:2px 10px;}
+    .seat-pass{font-size:20px;letter-spacing:4px;}
+    .seat-qr svg{width:70px;height:70px;}
+    .seat-url{font-size:8px;}
+    .seat-foot{font-size:8px;}
+  }
+  @page{size:A4;margin:8mm;}
+</style>
+</head>
+<body>
+
+  <div class="print-bar no-print">
+    <div>
+      <h1>🪐 思维星球 · 座位分发表</h1>
+      <div class="sub">共 50 座 · 每人一个专属链接 + 口令 · 打印后按座位分发</div>
+    </div>
+    <button class="print-btn" onclick="window.print()">🖨️ 打印 / 另存 PDF</button>
+  </div>
+
+  <div class="sheet-note no-print">
+    <b>老师使用说明：</b>① 打印本页（A4 自动分页，每张卡片 = 一个座位）；② 把卡片沿虚线裁开发给学生；③ 学生扫码或输入链接打开专属座位页，输入卡片上的<b>口令</b>即可绑定进入；④ 数据按座位完全隔离，互不串档；⑤ 防共用为软性防护（清缓存/换浏览器可绕过），请提醒学生<b>勿转发链接与口令</b>；⑥ 口令重置：告知老师新口令，更新重新部署后链接不变。
+  </div>
+
+  <div class="seat-grid" id="seatGrid"></div>
+
+  <div class="print-only-tip">思维星球 · 座位分发表 · 共 50 座 · 生成于 <span id="printDate"></span></div>
+
+  <script src="assets/seats.js"></script>
+  <script src="assets/qrcode.min.js"></script>
+  <script>
+    (function () {
+      if (!window.SEAT_SEATS || !window.qrcode) { return; }
+      var grid = document.getElementById('seatGrid');
+      var base = location.origin + location.pathname.replace(/[^/]*$/, '');
+
+      Object.keys(SEAT_SEATS).forEach(function (s) {
+        var url = base + 'seat.html?s=' + s;
+        var pass = SEAT_SEATS[s];
+
+        var card = document.createElement('div');
+        card.className = 'seat-card';
+
+        var top = document.createElement('div');
+        top.className = 'seat-card-top';
+        top.innerHTML = '<span class="seat-tag">座位</span><span class="seat-no">' + s + '</span>';
+        card.appendChild(top);
+
+        var pLab = document.createElement('div');
+        pLab.className = 'seat-pass-label'; pLab.textContent = '口令';
+        card.appendChild(pLab);
+
+        var passEl = document.createElement('div');
+        passEl.className = 'seat-pass'; passEl.textContent = pass;
+        card.appendChild(passEl);
+
+        var qr = document.createElement('div');
+        qr.className = 'seat-qr';
+        try {
+          var q = qrcode(0, 'M');
+          q.addData(url);
+          q.make();
+          qr.innerHTML = q.createSvgTag(3, 1);
+        } catch (e) { qr.textContent = url; }
+        card.appendChild(qr);
+
+        var urlEl = document.createElement('div');
+        urlEl.className = 'seat-url'; urlEl.textContent = url;
+        card.appendChild(urlEl);
+
+        var foot = document.createElement('div');
+        foot.className = 'seat-foot'; foot.textContent = '思维星球 · 扫一扫进入我的星球';
+        card.appendChild(foot);
+
+        grid.appendChild(card);
+      });
+
+      document.getElementById('printDate').textContent = new Date().toLocaleDateString('zh-CN');
+    })();
+  </script>
+</body>
+</html>
