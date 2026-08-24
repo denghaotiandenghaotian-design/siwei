@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>支持与说明 · 思维星球</title>
+<link rel="stylesheet" href="assets/styles.css">
+</head>
+<body>
+
+<header class="app-header">
+  <div class="container">
+    <div class="logo">
+      <svg class="planet" viewBox="0 0 40 40"><circle cx="20" cy="20" r="11" fill="#4C6FFF"/><ellipse cx="20" cy="20" rx="19" ry="7" fill="none" stroke="#FF8A4C" stroke-width="3" transform="rotate(-20 20 20)"/></svg>
+      思维星球
+    </div>
+    <button class="btn-sound" id="soundBtn" title="开关音效" onclick="tpToggleSound()">🔊</button>
+    <div class="avatar">朵</div>
+  </div>
+</header>
+
+<main class="container">
+
+  <!-- 页眉 -->
+  <section class="section center">
+    <div class="t-h1">支持与说明 💡</div>
+    <p class="t-sm" style="margin-top:6px;">关于这个小小的星球，和它背后的故事</p>
+  </section>
+
+  <!-- 第一部分（上）：使用说明 -->
+  <section class="section">
+    <div class="t-h3" style="margin-bottom:12px;">🌟 怎么玩转思维星球？</div>
+    <div class="step-list">
+      <div class="step-card">
+        <div class="step-no">1</div>
+        <div class="step-body">
+          <div class="step-title">🎯 选段位</div>
+          <div class="step-text">在首页选择 6–8 岁启蒙 / 9–10 岁发展 / 11–13 岁进阶，难度会自动匹配你的年龄。</div>
+        </div>
+      </div>
+      <div class="step-card">
+        <div class="step-no">2</div>
+        <div class="step-body">
+          <div class="step-title">🪐 挑星球</div>
+          <div class="step-text">数感运算、逻辑推理、图形认知、空间想象——四颗思维星球，想先探险哪颗都行。</div>
+        </div>
+      </div>
+      <div class="step-card">
+        <div class="step-no">3</div>
+        <div class="step-body">
+          <div class="step-title">📖 学知识点</div>
+          <div class="step-text">进入专题，看一张图就懂的图示讲解，学会后点亮「🌟 我学会啦」收集进度。</div>
+        </div>
+      </div>
+      <div class="step-card">
+        <div class="step-no">4</div>
+        <div class="step-body">
+          <div class="step-title">▶️ 去闯关</div>
+          <div class="step-text">做做小测验，答对就能收集星星 ⭐，连胜还能点亮专属勋章。</div>
+        </div>
+      </div>
+      <div class="step-card">
+        <div class="step-no">5</div>
+        <div class="step-body">
+          <div class="step-title">📊 看成长</div>
+          <div class="step-text">在「看板」里追踪已学专题、星星总数与连续打卡天数，看着自己一点点变强。</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 中间：星球图标进入按钮 -->
+  <section class="section center enter-wrap">
+    <a href="planet.html" class="enter-planet" aria-label="进入思维星球">
+      <svg class="enter-planet-svg" viewBox="0 0 120 120" aria-hidden="true">
+        <defs>
+          <radialGradient id="pg" cx="38%" cy="32%" r="75%">
+            <stop offset="0%" stop-color="#8AA2FF"/>
+            <stop offset="100%" stop-color="#4C6FFF"/>
+          </radialGradient>
+        </defs>
+        <circle cx="60" cy="60" r="36" fill="url(#pg)"/>
+        <ellipse cx="60" cy="60" rx="60" ry="21" fill="none" stroke="#FF8A4C" stroke-width="5" transform="rotate(-22 60 60)"/>
+        <circle cx="48" cy="52" r="6" fill="#fff" opacity=".9"/>
+        <circle cx="72" cy="66" r="4" fill="#fff" opacity=".75"/>
+        <circle cx="58" cy="76" r="3" fill="#fff" opacity=".6"/>
+      </svg>
+      <span class="enter-planet-ring"></span>
+    </a>
+    <div class="enter-planet-text">🪐 点一下星球，开始探险</div>
+  </section>
+
+  <!-- 第二部分（下）：支持通道 -->
+  <section class="section">
+    <div class="card support-donate">
+      <div class="donate-pill2">💖 支持通道</div>
+      <img src="assets/donate-qr.png" alt="微信支付二维码" class="support-qr"/>
+      <p class="support-desc">由于模型 Token 调用成本较高，为了维持服务稳定运行，现开启自愿赞助通道。如果您觉得本应用对您有帮助，欢迎扫码支持服务器及 Token 费用。金额不限，您的支持是我持续维护的动力！</p>
+      <div class="support-foot">金额不限 · 自愿支持 · 感谢您的每一份心意 <span class="donate-heart">♥</span></div>
+    </div>
+  </section>
+
+</main>
+
+<!-- 底部 Tab -->
+<nav class="tabbar">
+  <a class="tab" href="planet.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 11l9-8 9 8M5 10v10h14V10"/></svg>星球</a>
+  <a class="tab" href="curriculum.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 5h16v14H4zM4 9h16M9 5v14"/></svg>课程</a>
+  <a class="tab" href="exercise.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="8" width="18" height="10" rx="5"/><path d="M8 12h.01M12 12h.01M16 12h.01M7 8V6h10v2"/></svg>闯关</a>
+  <a class="tab" href="dashboard.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 20V10M10 20V4M16 20v-7M22 20H2"/></svg>看板</a>
+  <a class="tab" href="parent.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 21s-7-4.5-9-9a4.5 4.5 0 0 1 9-2 4.5 4.5 0 0 1 9 2c-2 4.5-9 9-9 9Z"/></svg>家长</a>
+</nav>
+
+<script src="assets/framework.js"></script>
+<script src="assets/play.js"></script>
+<script>
+function tpToggleSound(){ if(typeof TP==='undefined') return; TP.toggleSound(); var b=document.getElementById('soundBtn'); if(!b) return; b.textContent=TP.get().sound?'🔊':'🔇'; b.classList.toggle('off',!TP.get().sound); }
+tpToggleSound();
+if(typeof TP!=='undefined'){ TP.twinkle(); }
+</script>
+</body>
+</html>
