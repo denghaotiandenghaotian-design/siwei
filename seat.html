@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>座位门禁 · 思维星球</title>
+<link rel="stylesheet" href="assets/styles.css">
+</head>
+<body>
+
+<header class="app-header">
+  <div class="container">
+    <div class="logo">
+      <svg class="planet" viewBox="0 0 40 40"><circle cx="20" cy="20" r="11" fill="#4C6FFF"/><ellipse cx="20" cy="20" rx="19" ry="7" fill="none" stroke="#FF8A4C" stroke-width="3" transform="rotate(-20 20 20)"/></svg>
+      思维星球
+    </div>
+    <div class="avatar">朵</div>
+  </div>
+</header>
+
+<main class="container">
+
+  <section class="section center">
+    <div class="t-h1">🔐 座位门禁</div>
+    <p class="t-sm" style="margin-top:6px;">输入本座口令，登上你的专属星球</p>
+  </section>
+
+  <!-- 门禁卡 -->
+  <section class="section">
+    <div class="card gate-card">
+      <div class="gate-seat" id="gateSeat">座位 —</div>
+      <input class="gate-input" id="gatePass" type="password" inputmode="text" maxlength="8" placeholder="输入 4 位口令" autocomplete="off"/>
+      <button class="btn btn-primary btn-block" id="gateBtn" onclick="gateSubmit()">🚀 进入星球</button>
+      <div class="gate-err" id="gateErr"></div>
+    </div>
+  </section>
+
+  <!-- 座位说明 -->
+  <section class="section">
+    <div class="card gate-note">
+      <div class="t-h3" style="margin-bottom:10px;">✅ 座位模式说明</div>
+      <ul class="gate-list">
+        <li>已上线 <b>50 个座位</b>，每人一个专属链接，数据按座位<b>完全隔离</b>（各自独立的本地存储，互不串档）。</li>
+        <li>首次打开链接：输入本座位口令完成<b>设备绑定</b> → 进入系统；之后本机<b>免输口令</b>。</li>
+        <li>换设备打开：需再次输入口令；<b>口令是真正的钥匙</b>。</li>
+        <li>防共用为软性防护：清缓存 / 换浏览器 / 隐身模式可绕过，<b>请勿转发链接与口令</b>。</li>
+        <li>真正 100% 一人一号需后端账号体系，当前静态方案无法做到。</li>
+        <li>口令重置：如需收回或更换某座位口令，告知老师更新后重新部署即可（链接不变）。</li>
+      </ul>
+    </div>
+  </section>
+
+</main>
+
+<script src="assets/seats.js"></script>
+<script>
+(function () {
+  var q = new URLSearchParams(location.search);
+  var s = (q.get('s') || '').trim();
+  var seatEl = document.getElementById('gateSeat');
+  var errEl = document.getElementById('gateErr');
+  var passEl = document.getElementById('gatePass');
+  var btnEl = document.getElementById('gateBtn');
+
+  if (!s || !SEAT.SEATS[s]) {
+    seatEl.textContent = '⚠️ 无效座位';
+    errEl.textContent = '请使用老师发的「专属座位链接」（链接里带 ?s=座位号）打开本页。';
+    passEl.style.display = 'none';
+    btnEl.style.display = 'none';
+    return;
+  }
+
+  seatEl.textContent = '座位 ' + s + ' 号';
+  if (typeof passEl.focus === 'function') passEl.focus();
+
+  /* 本机已绑定该座位 → 自动进入（免输口令） */
+  if (SEAT.isBound(s)) {
+    seatEl.textContent = '座位 ' + s + ' 号 · 已绑定';
+    errEl.textContent = '本机已绑定，正在进入星球…';
+    SEAT.bind(s);
+    setTimeout(function () { location.href = 'index.html'; }, 600);
+    return;
+  }
+
+  window.gateSubmit = function () {
+    var p = passEl.value;
+    if (!p) { errEl.textContent = '请输入座位口令。'; return; }
+    if (SEAT.check(s, p)) {
+      SEAT.bind(s);
+      errEl.textContent = '';
+      seatEl.textContent = '座位 ' + s + ' 号 · 绑定成功 🎉';
+      setTimeout(function () { location.href = 'index.html'; }, 500);
+    } else {
+      errEl.textContent = '口令不对，请核对座位卡上的口令。';
+      passEl.value = '';
+      passEl.focus();
+    }
+  };
+  passEl.addEventListener('keydown', function (e) { if (e.key === 'Enter') gateSubmit(); });
+})();
+</script>
+</body>
+</html>
