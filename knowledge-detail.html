@@ -1,0 +1,309 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>思维星球 · 知识详解</title>
+<link rel="stylesheet" href="assets/styles.css">
+<style>
+  .d-hero{display:flex;gap:14px;align-items:center;background:linear-gradient(135deg,var(--brand-soft),#fff);border-radius:18px;padding:16px;margin-bottom:14px;}
+  .d-emoji{width:64px;height:64px;border-radius:18px;background:#fff;display:flex;align-items:center;justify-content:center;font-size:38px;flex:0 0 64px;box-shadow:0 4px 14px rgba(76,111,255,.18);}
+  .d-tit{font:800 22px var(--f-head);color:var(--text);line-height:1.25;}
+  .d-sub{font:700 12.5px var(--f-body);color:var(--brand);margin-top:4px;}
+  .d-chips{display:flex;gap:6px;flex-wrap:wrap;margin-top:6px;}
+  .d-chip{font-size:11px;background:#fff;color:var(--text-soft);border:1px solid var(--line);border-radius:999px;padding:2px 10px;}
+  .block{background:#fff;border-radius:16px;padding:16px;margin-bottom:14px;box-shadow:0 2px 10px rgba(30,39,69,.05);}
+  .block-h{display:flex;align-items:center;gap:8px;font:800 16px var(--f-head);color:var(--text);margin-bottom:10px;}
+  .block-h .ic{font-size:20px;}
+  /* 故事 */
+  .story{display:flex;gap:12px;align-items:flex-start;background:var(--brand-soft);border-radius:14px;padding:14px;}
+  .story .big{font-size:34px;flex:0 0 44px;line-height:1;}
+  .story p{margin:0;font-size:14.5px;line-height:1.7;color:var(--text);}
+  /* 分步理解 卡片 */
+  .step{display:flex;gap:10px;align-items:flex-start;background:var(--surface-2);border-radius:12px;padding:11px 12px;margin-bottom:8px;opacity:0;transform:translateY(10px);animation:pop .45s forwards;}
+  .step .n{flex:0 0 26px;height:26px;border-radius:50%;background:var(--brand);color:#fff;font:800 13px var(--f-head);display:flex;align-items:center;justify-content:center;}
+  .step .t{font-size:13.5px;line-height:1.6;color:var(--text);}
+  @keyframes pop{to{opacity:1;transform:translateY(0);}}
+  /* 跟我做 步进器 */
+  .solve-box{background:#FFF7EC;border:1px dashed #F0C98A;border-radius:14px;padding:14px;min-height:64px;}
+  .solve-step{display:flex;gap:10px;align-items:flex-start;margin-bottom:9px;opacity:0;transform:translateX(-8px);animation:slidein .4s forwards;}
+  .solve-step .n{flex:0 0 24px;height:24px;border-radius:7px;background:#F0A23C;color:#fff;font:800 12px var(--f-head);display:flex;align-items:center;justify-content:center;}
+  .solve-step .t{font-size:13.5px;line-height:1.6;color:#5b3d12;}
+  @keyframes slidein{to{opacity:1;transform:translateX(0);}}
+  .stepper-bar{display:flex;gap:10px;margin-top:12px;}
+  .btn-step{font:800 14px var(--f-body);border:none;border-radius:12px;padding:11px 18px;cursor:pointer;transition:.15s;}
+  .btn-next{background:var(--brand);color:#fff;flex:1;}
+  .btn-next:active{transform:scale(.97);}
+  .btn-redo{background:var(--surface-2);color:var(--text-soft);}
+  .done{display:none;margin-top:12px;background:#E7F8EE;border-radius:12px;padding:12px;text-align:center;font:800 15px var(--f-body);color:#1E7A46;}
+  /* 讲义 */
+  .lec-row{font-size:13.5px;line-height:1.65;color:var(--text-soft);margin:0 0 9px;}
+  .lec-row>b{color:var(--brand);font-weight:700;margin-right:4px;}
+  .lec-chip{display:inline-block;background:var(--brand-soft);color:var(--brand);border-radius:7px;padding:2px 9px;font-size:12px;margin:2px 4px 2px 0;}
+  .lec-ex{display:block;color:var(--text);margin:2px 0;}
+  .lec-ans{display:block;color:#1E7A46;font-weight:600;margin:2px 0 0;}
+  .lec-pit{background:#FFF4E8;border-radius:9px;padding:9px 11px;color:#9A4B12;font-size:13px;}
+  .lec-src{font-size:12px;color:var(--text-soft);text-decoration:none;}
+  .lec-src:hover{text-decoration:underline;}
+  .nav-back{display:inline-flex;align-items:center;gap:6px;color:var(--text-soft);font:700 14px var(--f-body);text-decoration:none;}
+  .empty{text-align:center;padding:40px 20px;color:var(--text-soft);}
+</style>
+</head>
+<body>
+
+<header class="app-header">
+  <div class="container">
+    <a class="row nav-back" href="framework.html">
+      <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg>
+      <span>返回知识地图</span>
+    </a>
+    <button class="btn-sound" id="soundBtn" title="开关音效" onclick="window.__toggleSound()">🔊</button>
+    <div class="avatar">朵</div>
+  </div>
+</header>
+
+<main class="container" id="app">
+  <div class="empty" id="loading">🛸 正在召唤知识精灵……</div>
+</main>
+
+<nav class="tabbar">
+  <a class="tab" href="planet.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 11l9-8 9 8M5 10v10h14V10"/></svg>星球</a>
+  <a class="tab active" href="curriculum.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 5h16v14H4zM4 9h16M9 5v14"/></svg>课程</a>
+  <a class="tab" href="exercise.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="8" width="18" height="10" rx="5"/><path d="M8 12h.01M12 12h.01M16 12h.01M7 8V6h10v2"/></svg>闯关</a>
+  <a class="tab" href="dashboard.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 20V10M10 20V4M16 20v-7M22 20H2"/></svg>看板</a>
+  <a class="tab" href="parent.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 21s-7-4.5-9-9a4.5 4.5 0 0 1 9-2 4.5 4.5 0 0 1 9 2c-2 4.5-9 9-9 9Z"/></svg>家长</a>
+</nav>
+
+<script src="assets/framework.js"></script>
+<script src="assets/knowledge-courses.js"></script>
+  <script src="assets/knowledge-kids.js"></script>
+  <script src="assets/illus.js"></script>
+  <script src="assets/questions.js"></script>
+<script src="assets/play.js"></script>
+<script>
+(function(){
+  const app = document.getElementById('app');
+  function g(p){ return new URLSearchParams(location.search).get(p); }
+  const m = g('m'), b = g('b'), l = g('l'), t = decodeURIComponent(g('t')||'');
+  const KEYMAP = { L1:"L1 · 启蒙阶", L2:"L2 · 发展阶", L3:"L3 · 进阶阶" };
+  const MODNAME = { number:"数感运算星球", logic:"逻辑推理星球", shape:"图形认知星球", space:"空间想象星球" };
+  const MODCOLOR = { number:"var(--m-number)", logic:"var(--m-logic)", shape:"var(--m-shape)", space:"var(--m-space)" };
+
+  if(!m || !b || !t || !MODULE_SPINE[m]){
+    app.innerHTML = '<div class="empty">😅 没有找到这个知识点<br><a class="nav-back" href="framework.html">回到知识地图</a></div>';
+    return;
+  }
+  const board = MODULE_SPINE[m].boards.find(function(x){ return x.id===b; }) || {name:b};
+  const kc = getKnowledgeCourse(m,b,l,t);
+  const kk = getKnowledgeKids(m,b,l,t);
+
+  if(!kc){
+    app.innerHTML = '<div class="empty">😅 这个知识点还没有内容哦<br><a class="nav-back" href="framework.html">回到知识地图</a></div>';
+    return;
+  }
+
+  const mascot = '<svg class="mascot" viewBox="0 0 100 110" style="width:40px;height:40px;vertical-align:middle;"><line x1="50" y1="20" x2="50" y2="8" stroke="#4C6FFF" stroke-width="3"/><circle cx="50" cy="6" r="4" fill="#FF8A4C"/><circle cx="50" cy="48" r="30" fill="#fff" stroke="#4C6FFF" stroke-width="4"/><circle cx="50" cy="48" r="21" fill="#C9D6FF"/><circle cx="44" cy="44" r="5" fill="#fff"/><circle cx="56" cy="44" r="5" fill="#fff"/><circle cx="44" cy="44" r="2.4" fill="#232745"/><circle cx="56" cy="44" r="2.4" fill="#232745"/><path d="M42 58 Q50 64 58 58" stroke="#232745" stroke-width="3" fill="none" stroke-linecap="round"/></svg>';
+
+  const kcChips = (kc.keypoints||[]).map(function(k){ return '<span class="lec-chip">'+k+'</span>'; }).join('');
+  const storyHtml = kk ? (
+    '<div class="block"><div class="block-h"><span class="ic">🧸</span>用孩子的方法讲给你听</div>'+
+    '<div class="story"><div class="big">'+(kk.emoji||'💡')+'</div><p>'+kk.story+'</p></div>'+
+    '<div id="stepsWrap" style="margin-top:12px;"></div>'+
+    '<div class="stepper-bar"><button class="btn-step btn-next" id="stepBtn" onclick="window.__revealStep()">👉 一步一步理解</button></div>'+
+    '</div>'
+  ) : '';
+
+  const solveHtml = kk && kk.solve && kk.solve.length ? (
+    '<div class="block"><div class="block-h"><span class="ic">🎮</span>跟我做一做（例题分步解）</div>'+
+    '<div class="solve-box" id="solveBox"></div>'+
+    '<div class="stepper-bar"><button class="btn-step btn-next" id="solveBtn" onclick="window.__revealSolve()">▶ 下一步，慢慢算</button><button class="btn-step btn-redo" id="redoBtn" style="display:none" onclick="window.__resetSolve()">↺ 重来</button></div>'+
+    '<div class="done" id="doneBox">🎉 你跟着做完啦，真棒！</div>'+
+    '</div>'
+  ) : '';
+
+  const lecHtml = (
+    '<div class="block"><div class="block-h"><span class="ic">📖</span>完整课程讲义</div>'+
+    '<p class="lec-row"><b>学习目标</b>'+kc.objective+'</p>'+
+    '<p class="lec-row"><b>学而思讲法</b>'+kc.method+'</p>'+
+    '<p class="lec-row"><b>关键知识点</b><br>'+kcChips+'</p>'+
+    '<p class="lec-row"><b>典型例题</b><span class="lec-ex">问：'+kc.example.q+'</span><span class="lec-ans">答：'+kc.example.a+'</span></p>'+
+    '<p class="lec-row"><b>易错点</b><div class="lec-pit">'+kc.pitfall+'</div></p>'+
+    '<p class="lec-row"><b>三阶进阶</b>'+kc.progression+'</p>'+
+    '<p class="lec-row" style="margin-top:6px;font-size:12px;color:var(--text-soft);">📚 内容改编自学而思课程体系（仅供学习参考）</p>'+
+    '</div>'
+  );
+
+  const illusHtml = (
+    '<div class="block illus-block">'+
+      '<div class="block-h"><span class="ic">🖼️</span>图示讲解（一张图看懂）</div>'+
+      '<div class="illus-stage" id="illusStage"></div>'+
+    '</div>'
+  );
+
+  /* —— 学会奖励 / 小测验 —— */
+  const learned = TP.isLearned(m,b,l,t);
+  const rewardHtml = (
+    '<div class="block" style="background:linear-gradient(135deg,#FFF7EC,#fff);">'+
+      '<div class="block-h"><span class="ic">🌟</span>学会了吗？</div>'+
+      '<p class="t-sm" id="rewardTip" style="margin-bottom:10px;">点下面的星星，把这颗知识星球收进你的思维宇宙～</p>'+
+      '<button class="btn btn-accent btn-block" id="learnBtn" onclick="window.__learnTopic()">'+(learned?'✅ 已学会（再点复习 +1 星）':'🌟 我学会啦！收下这颗星')+'</button>'+
+    '</div>'
+  );
+  const quizHtml = (
+    '<div class="block" id="quizBlock" style="display:none;">'+
+      '<div class="block-h"><span class="ic">🤔</span>考考你（小测验）</div>'+
+      '<div id="quizBody"></div>'+
+    '</div>'
+  );
+
+  app.innerHTML =
+    '<div class="d-hero">'+
+      '<div class="d-emoji">'+(kk?kk.emoji:'💡')+'</div>'+
+      '<div><div class="d-tit">'+(kc.title||t)+'</div>'+
+      '<div class="d-sub">'+mascot+' '+MODNAME[m]+' · '+board.name+' · '+(KEYMAP[l]||l)+'</div>'+
+      '<div class="d-chips"><span class="d-chip">'+t+'</span>'+(learned?'<span class="d-chip" style="background:#E4F9EA;color:#1FA64A;border-color:#bfe9cc;">✓ 已学会</span>':'')+'</div></div>'+
+    '</div>'+
+    storyHtml + solveHtml + lecHtml + illusHtml + rewardHtml + quizHtml;
+
+  /* —— 图示讲解（静态插画引擎） —— */
+  const illusStageEl = document.getElementById('illusStage');
+  if (illusStageEl && typeof ConceptIllus !== 'undefined') {
+    ConceptIllus.render(illusStageEl, m, b, l, t);
+  }
+
+  /* —— 分步理解 动画 —— */
+  const steps = kk ? kk.steps : [];
+  let stepIdx = 0;
+  const stepsWrap = document.getElementById('stepsWrap');
+  const stepBtn = document.getElementById('stepBtn');
+  window.__revealStep = function(){
+    if(stepIdx >= steps.length){ if(stepBtn) stepBtn.style.display='none'; return; }
+    const d = document.createElement('div');
+    d.className = 'step';
+    d.innerHTML = '<div class="n">'+(stepIdx+1)+'</div><div class="t">'+steps[stepIdx]+'</div>';
+    stepsWrap.appendChild(d);
+    stepIdx++;
+    if(stepBtn) stepBtn.textContent = (stepIdx>=steps.length) ? '✅ 我懂啦' : '👉 继续（'+(stepIdx+1)+'/'+steps.length+'）';
+    if(stepIdx>=steps.length && stepBtn) stepBtn.style.display='none';
+    stepsWrap.scrollIntoView({behavior:'smooth',block:'nearest'});
+  };
+
+  /* —— 跟我做 步进器 —— */
+  const solve = kk ? kk.solve : [];
+  let sIdx = 0;
+  const solveBox = document.getElementById('solveBox');
+  const solveBtn = document.getElementById('solveBtn');
+  const redoBtn = document.getElementById('redoBtn');
+  const doneBox = document.getElementById('doneBox');
+  window.__revealSolve = function(){
+    if(sIdx >= solve.length){ return; }
+    const d = document.createElement('div');
+    d.className = 'solve-step';
+    d.innerHTML = '<div class="n">'+(sIdx+1)+'</div><div class="t">'+solve[sIdx]+'</div>';
+    solveBox.appendChild(d);
+    sIdx++;
+    if(sIdx >= solve.length){
+      if(solveBtn) solveBtn.style.display='none';
+      if(redoBtn) redoBtn.style.display='inline-block';
+      if(doneBox) doneBox.style.display='block';
+    } else {
+      if(solveBtn) solveBtn.textContent = '▶ 下一步（'+(sIdx+1)+'/'+solve.length+'）';
+    }
+    solveBox.scrollIntoView({behavior:'smooth',block:'nearest'});
+  };
+  window.__resetSolve = function(){
+    sIdx = 0;
+    if(solveBox) solveBox.innerHTML='';
+    if(solveBtn){ solveBtn.style.display='inline-block'; solveBtn.textContent='▶ 下一步，慢慢算'; }
+    if(redoBtn) redoBtn.style.display='none';
+    if(doneBox) doneBox.style.display='none';
+  };
+
+  /* —— 学会奖励按钮 —— */
+  window.__learnTopic = function(){
+    const btn = document.getElementById('learnBtn');
+    const tip = document.getElementById('rewardTip');
+    const r = TP.learnTopic(m,b,l,t);
+    if(r.first){
+      TP.confetti(30); TP.sound('badge');
+      TP.praise('🌟','点亮一颗知识星！');
+      if(btn) btn.textContent='✅ 已学会（再点复习 +1 星）';
+      if(tip) tip.textContent='太棒了！这颗星球已经被你收进宇宙啦 ✨';
+      const chip = document.querySelector('.d-chips');
+      if(chip && !document.getElementById('learnedChip')){
+        const c=document.createElement('span');
+        c.id='learnedChip'; c.className='d-chip';
+        c.style.background='#E4F9EA'; c.style.color='#1FA64A'; c.style.borderColor='#bfe9cc';
+        c.textContent='✓ 已学会'; chip.appendChild(c);
+      }
+      // 解锁成就时再夸一次
+      if(r.badges && r.badges.length){
+        setTimeout(function(){ TP.confetti(24); TP.praise(r.badges[0].emoji+' 新成就：'+r.badges[0].name+'！'); }, 900);
+      }
+    } else {
+      TP.sound('star'); TP.praise('💡','复习一下也超棒！');
+      if(btn){ btn.classList.add('star-pop'); setTimeout(function(){ btn.classList.remove('star-pop'); },500); }
+    }
+  };
+
+  /* —— 考考你 小测验 —— */
+  function renderQuiz(){
+    const block = document.getElementById('quizBlock');
+    const body  = document.getElementById('quizBody');
+    if(!block || !body){ return; }
+    const quiz = TP.findQuiz(m, l, t);
+    if(!quiz){ block.style.display='none'; return; }
+    block.style.display='block';
+    let answered=false;
+    const vis = quiz.visual ? quiz.visual.map(function(x){ return '<span style="font-size:30px">'+x+'</span>'; }).join(' ') : '';
+    body.innerHTML =
+      '<p class="t-body" style="font-size:15.5px;line-height:1.6;margin-bottom:10px;">'+quiz.question+'</p>'+
+      (vis?'<div class="row center" style="gap:10px;margin-bottom:10px;">'+vis+'</div>':'')+
+      '<div class="row wrap" id="qOpts" style="gap:10px;"></div>'+
+      '<div class="quiz-fb" id="qFb"></div>'+
+      '<a class="btn btn-ghost btn-block btn-sm" style="margin-top:12px;display:none;" id="qMore" href="exercise.html?module='+m+'&level='+l+'">去闯关练更多 →</a>';
+    const optsBox = document.getElementById('qOpts');
+    quiz.options.forEach(function(o,k){
+      const b=document.createElement('button');
+      b.className='quiz-opt'; b.style.flex='1 1 45%';
+      b.innerHTML='<span class="qk">'+String.fromCharCode(65+k)+'</span><span>'+o+'</span>';
+      b.onclick=function(){
+        if(answered) return; answered=true; TP.sound('click');
+        const all=[...optsBox.children];
+        all.forEach(function(x){ x.classList.add('locked'); });
+        const fb=document.getElementById('qFb');
+        const more=document.getElementById('qMore');
+        if(k===quiz.answer){
+          b.classList.add('correct'); TP.sound('good'); TP.confetti(20);
+          TP.recordSolved(1); TP.awardStars(1,'quiz');
+          TP.praise('🎉','答对啦，又得一颗星！');
+          if(fb){ fb.className='quiz-fb show'; fb.innerHTML='✅ <b style="color:#1FA64A">答对啦！</b> '+quiz.explanation; }
+        } else {
+          b.classList.add('wrong'); all[quiz.answer].classList.add('correct'); TP.sound('bad');
+          TP.praise('💪','没关系，看解析再想想～');
+          if(fb){ fb.className='quiz-fb show'; fb.innerHTML='❌ 正确答案：<b>'+String.fromCharCode(65+quiz.answer)+'</b>。'+quiz.explanation; }
+        }
+        if(more) more.style.display='flex';
+      };
+      optsBox.appendChild(b);
+    });
+  }
+  renderQuiz();
+
+  /* —— 音效开关同步 —— */
+  function syncSound(){
+    const b=document.getElementById('soundBtn'); if(!b) return;
+    const on=TP.get().sound;
+    b.textContent = on ? '🔊' : '🔇';
+    b.classList.toggle('off', !on);
+  }
+  window.__toggleSound = function(){ TP.toggleSound(); syncSound(); };
+  syncSound();
+
+  /* —— 趣味氛围：星空 + 可点吉祥物 —— */
+  TP.twinkle();
+  TP.initMascot();
+})();
+</script>
+</body>
+</html>
