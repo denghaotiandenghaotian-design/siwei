@@ -105,7 +105,7 @@
       var grid = document.getElementById('seatGrid');
       var base = location.origin + location.pathname.replace(/[^/]*$/, '');
 
-      Object.keys(SEAT_SEATS).forEach(function (s) {
+      Object.keys(SEAT_SEATS).sort().forEach(function (s) {
         var url = base + 'seat.html?s=' + s;
         var pass = SEAT_SEATS[s];
 
