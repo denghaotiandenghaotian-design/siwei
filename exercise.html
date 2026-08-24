@@ -1,0 +1,272 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>思维星球 · 闯关</title>
+<link rel="stylesheet" href="assets/styles.css">
+</head>
+<body>
+
+<header class="app-header">
+  <div class="container">
+    <a class="row" href="curriculum.html" style="gap:8px;color:var(--text-soft);font:700 14px var(--f-body);">
+      <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg>
+      <span id="headTitle">逻辑推理 · 发展 L2</span>
+    </a>
+    <div class="ring" id="headRing" style="--p:40;--c:var(--m-logic);width:44px;height:44px;"><span id="headRingTxt" style="font-size:12px">1/5</span></div>
+  </div>
+</header>
+
+<main class="container">
+
+  <!-- 吉祥物提示 -->
+  <section class="section row" style="align-items:flex-start;gap:12px;">
+    <svg class="mascot" style="width:64px;height:64px" viewBox="0 0 100 110">
+      <line x1="50" y1="20" x2="50" y2="8" stroke="#4C6FFF" stroke-width="3"/><circle cx="50" cy="6" r="4" fill="#FF8A4C"/>
+      <circle cx="50" cy="48" r="30" fill="#fff" stroke="#4C6FFF" stroke-width="4"/>
+      <circle cx="50" cy="48" r="21" fill="#C9D6FF"/>
+      <circle cx="44" cy="44" r="5" fill="#fff"/><circle cx="56" cy="44" r="5" fill="#fff"/>
+      <circle cx="44" cy="44" r="2.4" fill="#232745"/><circle cx="56" cy="44" r="2.4" fill="#232745"/>
+      <path d="M42 58 Q50 64 58 58" stroke="#232745" stroke-width="3" fill="none" stroke-linecap="round"/>
+      <rect x="33" y="76" width="34" height="22" rx="11" fill="#4C6FFF"/>
+    </svg>
+    <div class="bubble" style="margin-top:6px;" id="hint">小思提示：先读题，再选你最确定的答案，错了也没关系～</div>
+  </section>
+
+  <!-- 分层营选择器 -->
+  <section style="margin-top:4px;">
+    <div class="row between t-sm" style="margin-bottom:6px;">
+      <span>选分层营（难度维度）</span><span id="bandNote" style="color:var(--text-soft);"></span>
+    </div>
+    <div class="seg" id="bandSeg"></div>
+  </section>
+
+  <!-- 进度 -->
+  <section style="margin-top:6px;">
+    <div class="row between t-sm" style="margin-bottom:6px;">
+      <span id="qIndex">题目 1 / 5</span><span id="qStars">本题 +1 ⭐</span>
+    </div>
+    <div style="height:10px;background:var(--surface-2);border-radius:999px;overflow:hidden;">
+      <div id="qBar" style="height:100%;width:20%;background:linear-gradient(90deg,#7C97FF,#4C6FFF);border-radius:999px;transition:width .4s;"></div>
+    </div>
+  </section>
+
+  <!-- 题卡 -->
+  <section class="section">
+    <div class="card card-module shadow-md" id="qCard" style="padding:22px;">
+      <div class="row between" style="align-items:center;margin-bottom:10px;">
+        <div class="badge badge-logic" id="qBadge">逻辑推理</div>
+        <span class="chip" id="qBand" style="height:26px;font-size:12px;display:none;"></span>
+      </div>
+      <div class="card" id="qObj" style="background:var(--brand-soft);border:none;padding:10px 12px;margin-bottom:12px;font-size:13.5px;line-height:1.55;"></div>
+      <div class="t-h2" id="qText" style="line-height:1.5;"></div>
+      <div id="qVisual" class="row center" style="margin:18px 0;gap:10px;font-size:34px;"></div>
+      <div id="qTags" class="row wrap" style="gap:6px;margin-bottom:6px;"></div>
+      <div id="options" class="row wrap" style="gap:12px;margin-top:10px;"></div>
+      <!-- 解析（答后显示） -->
+      <div id="explain" class="card" style="display:none;margin-top:16px;background:var(--surface-2);border:none;padding:14px;">
+        <div class="row" style="gap:6px;margin-bottom:4px;"><span style="font-size:18px">💡</span><span class="t-h3" style="font-size:16px">小思讲解析</span></div>
+        <p class="t-body" id="explainText" style="font-size:15px;"></p>
+      </div>
+      <!-- 对应课程（全网检索匹配） -->
+      <a id="courseLine" class="card row" style="display:none;margin-top:12px;background:var(--brand-soft);border:none;padding:10px 12px;font-size:13.5px;line-height:1.5;gap:8px;align-items:center;text-decoration:none;color:var(--text);"></a>
+    </div>
+  </section>
+
+  <section class="section">
+    <button id="nextBtn" class="btn btn-primary btn-block btn-disabled" disabled>下一题 →</button>
+  </section>
+
+</main>
+
+<!-- 答对弹窗 -->
+<div class="modal-mask hidden" id="winModal">
+  <div class="modal">
+    <div class="emoji">🎉</div>
+    <div class="t-h1" style="color:var(--ok)">答对啦！</div>
+    <p class="t-body" id="winText" style="margin:8px 0 4px;"></p>
+    <div class="star-row center" style="justify-content:center;margin:10px 0;"><span class="star">⭐</span><span class="star">⭐</span><span class="star">⭐</span></div>
+    <button class="btn btn-accent btn-block" style="margin-top:16px;" onclick="closeWin()">继续探险 🚀</button>
+  </div>
+</div>
+
+<!-- 通关弹窗 -->
+<div class="modal-mask hidden" id="doneModal">
+  <div class="modal">
+    <div class="emoji">🏆</div>
+    <div class="t-h1" id="doneTitle" style="color:var(--m-logic)">通关！</div>
+    <p class="t-body" style="margin:8px 0;" id="doneText">这一关的星星都收集到啦～</p>
+    <a href="dashboard.html" class="btn btn-primary btn-block" style="margin-top:16px;">查看我的星球看板</a>
+  </div>
+</div>
+
+<nav class="tabbar">
+  <a class="tab" href="planet.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 11l9-8 9 8M5 10v10h14V10"/></svg>星球</a>
+  <a class="tab" href="curriculum.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 5h16v14H4zM4 9h16M9 5v14"/></svg>课程</a>
+  <a class="tab active" href="exercise.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="8" width="18" height="10" rx="5"/><path d="M8 12h.01M12 12h.01M16 12h.01M7 8V6h10v2"/></svg>闯关</a>
+  <a class="tab" href="dashboard.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 20V10M10 20V4M16 20v-7M22 20H2"/></svg>看板</a>
+  <a class="tab" href="parent.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 21s-7-4.5-9-9a4.5 4.5 0 0 1 9-2 4.5 4.5 0 0 1 9 2c-2 4.5-9 9-9 9Z"/></svg>家长</a>
+</nav>
+
+<script src="assets/questions.js"></script>
+<script src="assets/curriculum.js"></script>
+<script src="assets/framework.js"></script>
+<script src="assets/courses.js"></script>
+<script src="assets/play.js"></script>
+<script>
+const params = new URLSearchParams(location.search);
+const curModule = params.get('module') || 'logic';
+const curLevel  = params.get('level')  || 'L2';
+let   curBand   = params.get('band')   || '';
+const M = MODULES[curModule];
+const TOTAL = 5;
+
+/* 目标索引：标签 → 课程学习目标（来自深化后的 curriculum.js） */
+const OBJ_INDEX = {};
+CURRICULUM_ORDER.forEach(m=>["L1","L2","L3"].forEach(l=>{
+  getChapters(m,l).forEach(ch=>{
+    [ch.t, ...(ch.keys||[])].forEach(k=>{ if(!OBJ_INDEX[k]) OBJ_INDEX[k]=ch.obj; });
+  });
+}));
+function objectiveOf(q){
+  const o = (q.tags||[]).map(t=>OBJ_INDEX[t]).find(Boolean);
+  return o || `训练「${(q.tags||[])[0]||'本知识点'}」的灵活应用`;
+}
+
+document.getElementById('headTitle').textContent = `${M.name} · ${LEVELS[curLevel].split(' ')[0]} ${curLevel}`;
+document.getElementById('qCard').className = `card card-module ${M.cls} shadow-md`;
+document.getElementById('qBadge').textContent = M.name;
+document.getElementById('qBadge').className = `badge badge-${curModule==='number'?'number':curModule==='logic'?'logic':curModule==='shape'?'shape':'space'}`;
+document.getElementById('headRing').style.setProperty('--c', M.color);
+document.getElementById('qBar').style.background = `linear-gradient(90deg, ${M.color}, ${M.color})`;
+
+/* 分层营选择器 */
+const bandSeg = document.getElementById('bandSeg');
+const bandOpts = [{id:'',name:'全部',color:'var(--brand)'}]
+  .concat(Object.keys(BANDS).map(id=>({id, name:BANDS[id].name, color:BANDS[id].color})));
+bandOpts.forEach(b=>{
+  const el=document.createElement('button');
+  el.className='chip'+(b.id===curBand?' sel':'');
+  el.dataset.band=b.id;
+  el.style.borderColor = b.id? BANDS[b.id].color : '';
+  if(b.id===curBand) el.style.background = (BANDS[b.id]?BANDS[b.id].color:'var(--brand)')+'22';
+  el.innerHTML = b.id ? `${BANDS[b.id].name} <span style="opacity:.7">·${BANDS[b.id].tag}</span>` : '全部';
+  el.onclick=()=>{ curBand=b.id; bandSeg.querySelectorAll('.chip').forEach(c=>{
+      const on=c.dataset.band===curBand;
+      c.classList.toggle('sel',on);
+      c.style.background = on&&c.dataset.band? BANDS[c.dataset.band].color+'22' : '';
+    });
+    updateBandNote(); start();
+  };
+  bandSeg.appendChild(el);
+});
+function updateBandNote(){
+  const bc = bandCount(curModule, curLevel);
+  const total = bc.base+bc.improve+bc.elite+bc.star;
+  document.getElementById('bandNote').textContent =
+    curBand ? `本层 ${bc[curBand]} 题` : `共 ${total} 题（启${bc.base}/扬${bc.improve}/远${bc.elite}/星${bc.star}）`;
+}
+
+let list = [], i = 0, answered = false, stars = 0;
+function start(){ list = loadQuestions(curModule, curLevel, TOTAL, curBand||null); i=0; stars=0; answered=false; updateBandNote(); render(); }
+
+const qText=document.getElementById('qText'), qVis=document.getElementById('qVisual'),
+      qTags=document.getElementById('qTags'), optsBox=document.getElementById('options'),
+      nextBtn=document.getElementById('nextBtn'), qBar=document.getElementById('qBar'),
+      qIndex=document.getElementById('qIndex'), explain=document.getElementById('explain'),
+      explainText=document.getElementById('explainText'), headRingTxt=document.getElementById('headRingTxt'),
+      qObj=document.getElementById('qObj'), qBand=document.getElementById('qBand');
+
+function render(){
+  answered=false; nextBtn.disabled=true; nextBtn.classList.add('btn-disabled');
+  explain.style.display='none';
+  const q=list[i];
+  qText.textContent=q.question;
+  qVis.innerHTML = q.visual ? q.visual.map(x=>`<span>${x}</span>`).join('') : '';
+  qTags.innerHTML = (q.tags||[]).map(t=>`<span class="chip" style="height:26px;font-size:12px;background:var(--brand-soft);color:var(--brand);border:none">${t}</span>`).join('');
+  // 学习目标 + 分层徽章
+  qObj.innerHTML = `🎯 <b>学习目标：</b>${objectiveOf(q)}`;
+  if(q.band && BANDS[q.band]){
+    qBand.style.display='inline-flex';
+    qBand.textContent = `${BANDS[q.band].name}·${BANDS[q.band].tag}`;
+    qBand.style.color = BANDS[q.band].color;
+    qBand.style.background = BANDS[q.band].color + '22';
+    qBand.style.border = 'none';
+  } else { qBand.style.display='none'; }
+  // 对应课程（全网检索匹配的真实课程资源）
+  const courseEl = document.getElementById('courseLine');
+  const c = (typeof getCourseForQuestion === 'function') ? getCourseForQuestion(q) : null;
+  if (c){
+    courseEl.style.display = 'flex';
+    courseEl.innerHTML = `<span style="font-size:16px">📚</span><span><b>对应课程：</b><b style="color:var(--brand);">${c.title}</b></span><span class="chip" style="height:24px;font-size:11.5px;background:#fff;color:var(--text-soft);border:1px solid var(--line);">${c.provider}</span>`;
+  } else { courseEl.style.display = 'none'; }
+  optsBox.innerHTML='';
+  q.options.forEach((o,k)=>{
+    const b=document.createElement('button');
+    b.className='option'; b.style.flex='1 1 45%';
+    b.innerHTML=`<span class="key">${String.fromCharCode(65+k)}</span><span>${o}</span>`;
+    b.onclick=()=>choose(b,k);
+    optsBox.appendChild(b);
+  });
+  qIndex.textContent=`题目 ${i+1} / ${list.length}`;
+  headRingTxt.textContent=`${i+1}/${list.length}`;
+  qBar.style.width=((i+1)/list.length*100)+'%';
+}
+function choose(btn,k){
+  if(answered) return; answered=true;
+  const q=list[i];
+  const all=[...optsBox.children];
+  all.forEach(b=>b.classList.add('locked'));
+  explainText.textContent=q.explanation;
+  explain.style.display='block';
+  if(k===q.answer){
+    btn.classList.add('correct'); stars++;
+    fireConfetti(); TP.sound('good');
+    TP.recordSolved(1); TP.awardStars(1,'quiz');
+    document.getElementById('winText').textContent=`你掌握了「${(q.tags||[])[0]||'这个知识点'}」！`;
+    setTimeout(()=>document.getElementById('winModal').classList.remove('hidden'),600);
+  }else{
+    btn.classList.add('wrong'); TP.sound('bad');
+    all[q.answer].classList.add('correct');
+    toast('没关系，看看解析再试试下一题 💪');
+  }
+  nextBtn.disabled=false; nextBtn.classList.remove('btn-disabled');
+}
+nextBtn.onclick=()=>{
+  document.getElementById('winModal').classList.add('hidden');
+  if(i<list.length-1){ i++; render(); }
+  else{
+    const dt=document.getElementById('doneTitle'), dtx=document.getElementById('doneText');
+    dt.textContent=`${M.name} · ${curLevel} 通关！`;
+    dt.style.color=M.color;
+    TP.recordExercise();
+    const nb=TP.checkBadges();
+    dtx.textContent=`本次收集 ${stars} / ${list.length} 星星（总共 ${TP.get().stars} ⭐），去给爸爸妈妈看看吧～`;
+    document.getElementById('doneModal').classList.remove('hidden');
+    if(nb.length){
+      fireConfetti();
+      setTimeout(()=>TP.praise(nb[0].emoji+' 新成就：'+nb[0].name+'！'),700);
+    }
+  }
+};
+function closeWin(){document.getElementById('winModal').classList.add('hidden');nextBtn.click();}
+function toast(msg){
+  const t=document.createElement('div');t.className='toast';t.textContent=msg;
+  document.body.appendChild(t);setTimeout(()=>t.remove(),1800);
+}
+function fireConfetti(){
+  const colors=['#4C6FFF','#FF8A4C','#2FD0A6','#9B6DFF','#FF6BAE'];
+  for(let c=0;c<28;c++){
+    const p=document.createElement('div');p.className='confetti';
+    p.style.left=Math.random()*100+'vw';
+    p.style.background=colors[c%colors.length];
+    p.style.animationDelay=Math.random()*.3+'s';
+    document.body.appendChild(p);setTimeout(()=>p.remove(),1700);
+  }
+}
+TP.twinkle(); TP.initMascot();
+start();
+</script>
+</body>
+</html>
