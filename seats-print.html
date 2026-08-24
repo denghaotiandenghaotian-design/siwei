@@ -27,9 +27,10 @@
     color:#5A6080;background:#FFF7ED;border:1px solid rgba(255,138,76,.35);border-radius:12px;
   }
   .sheet-note b{color:#E07B39;}
-  .seat-grid{
-    max-width:900px;margin:0 auto;display:grid;
-    grid-template-columns:repeat(3,1fr);gap:12px;
+  .seat-grid{max-width:900px;margin:0 auto;}
+  .print-page{
+    display:grid;grid-template-columns:repeat(3,1fr);gap:12px;
+    margin-bottom:14px;
   }
   .seat-card{
     background:#fff;border-radius:14px;padding:12px 10px 10px;text-align:center;
@@ -64,7 +65,9 @@
     .print-bar h1{font-size:16px;}
     .print-bar .sub{font-size:11px;}
     .sheet-note{font-size:11px;padding:8px 12px;}
-    .seat-grid{gap:8px;max-width:100%;}
+    .seat-grid{max-width:100%;}
+    .print-page{break-after:page;page-break-after:always;}
+    .print-page:last-child{break-after:auto;page-break-after:auto;}
     .seat-card{
       page-break-inside:avoid;break-inside:avoid;
       border-radius:10px;padding:8px 6px 6px;box-shadow:none;
@@ -98,14 +101,21 @@
   <div class="print-only-tip">思维星球 · 座位分发表 · 共 50 座 · 生成于 <span id="printDate"></span></div>
 
   <script src="assets/seats.js"></script>
-  <script src="assets/qrcode.js"></script>
   <script>
     (function () {
-      if (!window.SEAT_SEATS || !window.qrcode) { return; }
+      if (!window.SEAT_SEATS) { return; }
       var grid = document.getElementById('seatGrid');
       var base = location.origin + location.pathname.replace(/[^/]*$/, '');
+      var page = null, n = 0;
 
       Object.keys(SEAT_SEATS).sort().forEach(function (s) {
+        /* 每 6 张卡一组 → 一个打印页（显式分页，不依赖浏览器自动分页） */
+        if (n % 6 === 0) {
+          page = document.createElement('div');
+          page.className = 'print-page';
+          grid.appendChild(page);
+        }
+        n++;
         var url = base + 'seat.html?s=' + s;
         var pass = SEAT_SEATS[s];
 
@@ -127,12 +137,10 @@
 
         var qr = document.createElement('div');
         qr.className = 'seat-qr';
-        try {
-          var q = qrcode(0, 'M');
-          q.addData(url);
-          q.make();
-          qr.innerHTML = q.createImgTag(6, 2);
-        } catch (e) { qr.textContent = url; }
+        var img = document.createElement('img');
+        img.src = 'assets/qr/seat_' + s + '.gif';
+        img.alt = '座位 ' + s + ' 二维码';
+        qr.appendChild(img);
         card.appendChild(qr);
 
         var urlEl = document.createElement('div');
@@ -143,7 +151,7 @@
         foot.className = 'seat-foot'; foot.textContent = '思维星球 · 扫一扫进入我的星球';
         card.appendChild(foot);
 
-        grid.appendChild(card);
+        page.appendChild(card);
       });
 
       document.getElementById('printDate').textContent = new Date().toLocaleDateString('zh-CN');
