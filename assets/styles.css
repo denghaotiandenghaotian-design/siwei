@@ -77,6 +77,12 @@ button{font-family:inherit;}
 .btn-block{width:100%;}
 .btn-disabled{background:var(--surface-2);color:var(--text-mute);box-shadow:none;cursor:not-allowed;}
 .btn-sm{height:44px;padding:0 18px;font-size:15px;border-radius:14px;}
+.btn-pulse{animation:btnPulse 1.15s ease-in-out infinite;}
+@keyframes btnPulse{
+  0%{box-shadow:0 0 0 0 rgba(76,111,255,.55);}
+  70%{box-shadow:0 0 0 14px rgba(76,111,255,0);}
+  100%{box-shadow:0 0 0 0 rgba(76,111,255,0);}
+}
 
 /* ---------- Cards ---------- */
 .card{background:var(--surface);border:1px solid var(--border);border-radius:24px;padding:20px;
@@ -416,6 +422,7 @@ button{font-family:inherit;}
 @media (prefers-reduced-motion: reduce){
   .enter-planet-svg{animation:none;}
   .enter-planet-ring{animation:none;}
+  .btn-pulse{animation:none;box-shadow:0 0 0 4px rgba(76,111,255,.35);}
 }
 
 /* ============================================================
