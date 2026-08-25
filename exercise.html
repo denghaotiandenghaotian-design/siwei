@@ -75,7 +75,10 @@
   </section>
 
   <section class="section">
-    <button id="nextBtn" class="btn btn-primary btn-block btn-disabled" disabled>下一题 →</button>
+    <div class="row q-actions" style="gap:10px;">
+      <button id="retryBtn" class="btn btn-ghost" style="display:none;flex:1 1 0;min-width:0;">🔄 再试一次</button>
+      <button id="nextBtn" class="btn btn-primary btn-disabled" disabled style="flex:2 1 0;min-width:0;">下一题 →</button>
+    </div>
   </section>
 
 </main>
@@ -169,18 +172,35 @@ function updateBandNote(){
     curBand ? `本层 ${bc[curBand]} 题` : `共 ${total} 题（启${bc.base}/扬${bc.improve}/远${bc.elite}/星${bc.star}）`;
 }
 
-let list = [], i = 0, answered = false, stars = 0;
+let list = [], i = 0, answered = false, stars = 0, currentAnswer = 0;
 function start(){ list = loadQuestions(curModule, curLevel, TOTAL, curBand||null); i=0; stars=0; answered=false; updateBandNote(); render(); }
+
+/* 选项洗牌，让「再试一次」真正有意义（每次顺序不同） */
+function shuffle(a){
+  a=a.slice();
+  for(let x=a.length-1;x>0;x--){
+    const j=Math.floor(Math.random()*(x+1));
+    const t=a[x];a[x]=a[j];a[j]=t;
+  }
+  return a;
+}
+function scrollToActions(){
+  const a=document.querySelector('.q-actions');
+  if(a) setTimeout(()=>a.scrollIntoView({behavior:'smooth',block:'center'}),300);
+}
 
 const qText=document.getElementById('qText'), qVis=document.getElementById('qVisual'),
       qTags=document.getElementById('qTags'), optsBox=document.getElementById('options'),
-      nextBtn=document.getElementById('nextBtn'), qBar=document.getElementById('qBar'),
+      nextBtn=document.getElementById('nextBtn'), retryBtn=document.getElementById('retryBtn'),
+      qBar=document.getElementById('qBar'),
       qIndex=document.getElementById('qIndex'), explain=document.getElementById('explain'),
       explainText=document.getElementById('explainText'), headRingTxt=document.getElementById('headRingTxt'),
       qObj=document.getElementById('qObj'), qBand=document.getElementById('qBand');
 
 function render(){
   answered=false; nextBtn.disabled=true; nextBtn.classList.add('btn-disabled');
+  nextBtn.classList.remove('btn-pulse'); nextBtn.textContent='下一题 →';
+  retryBtn.style.display='none';
   explain.style.display='none';
   const q=list[i];
   qText.textContent=q.question;
@@ -203,7 +223,9 @@ function render(){
     courseEl.innerHTML = `<span style="font-size:16px">📚</span><span><b>对应课程：</b><b style="color:var(--brand);">${c.title}</b></span><span class="chip" style="height:24px;font-size:11.5px;background:#fff;color:var(--text-soft);border:1px solid var(--line);">${c.provider}</span>`;
   } else { courseEl.style.display = 'none'; }
   optsBox.innerHTML='';
-  q.options.forEach((o,k)=>{
+  const so = shuffle(q.options);                 // 每次进入本题重新洗牌
+  currentAnswer = so.indexOf(q.options[q.answer]);
+  so.forEach((o,k)=>{
     const b=document.createElement('button');
     b.className='option'; b.style.flex='1 1 45%';
     b.innerHTML=`<span class="key">${String.fromCharCode(65+k)}</span><span>${o}</span>`;
@@ -221,20 +243,27 @@ function choose(btn,k){
   all.forEach(b=>b.classList.add('locked'));
   explainText.textContent=q.explanation;
   explain.style.display='block';
-  if(k===q.answer){
+  if(k===currentAnswer){
     btn.classList.add('correct'); stars++;
     fireConfetti(); TP.sound('good');
     TP.recordSolved(1); TP.awardStars(1,'quiz');
+    retryBtn.style.display='none';
     document.getElementById('winText').textContent=`你掌握了「${(q.tags||[])[0]||'这个知识点'}」！`;
     setTimeout(()=>document.getElementById('winModal').classList.remove('hidden'),600);
   }else{
     btn.classList.add('wrong'); TP.sound('bad');
-    all[q.answer].classList.add('correct');
-    toast('没关系，看看解析再试试下一题 💪');
+    all[currentAnswer].classList.add('correct');
+    // 答错也不卡住：给明确的继续入口 + 可重做本题
+    retryBtn.style.display='';
+    nextBtn.classList.add('btn-pulse');
+    nextBtn.textContent='看了解析 · 下一题 →';
+    toast('没关系，可以再试一次，或直接下一题 💪');
+    scrollToActions();
   }
   nextBtn.disabled=false; nextBtn.classList.remove('btn-disabled');
 }
 nextBtn.onclick=()=>{
+  retryBtn.style.display='none'; nextBtn.classList.remove('btn-pulse');
   document.getElementById('winModal').classList.add('hidden');
   if(i<list.length-1){ i++; render(); }
   else{
@@ -250,6 +279,11 @@ nextBtn.onclick=()=>{
       setTimeout(()=>TP.praise(nb[0].emoji+' 新成就：'+nb[0].name+'！'),700);
     }
   }
+};
+retryBtn.onclick=()=>{
+  // 重做本题：重新洗牌、清状态、回到本题顶部
+  render();
+  window.scrollTo({top:0,behavior:'smooth'});
 };
 function closeWin(){document.getElementById('winModal').classList.add('hidden');nextBtn.click();}
 function toast(msg){
